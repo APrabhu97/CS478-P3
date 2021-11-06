@@ -19,7 +19,6 @@
         android:id="@+id/attractionWebsite"
         android:layout_width="0px"
         android:layout_height="match_parent"
-        android:layout_weight="0"
-        android:name="com.anish.a2.WebViewFragment" />
+        android:layout_weight="0" />
 
 </LinearLayout>
