@@ -35,22 +35,23 @@ public class WebViewFragment extends Fragment {
         super.onViewCreated(view,savedInstanceState);
         final FragmentContainerView  websiteFragmentContainerView = (FragmentContainerView)getActivity().findViewById(R.id.attractionWebsite);;
         model = new ViewModelProvider(requireActivity()).get(ListViewModel.class);
-        model.getSelectedItem().observe(getViewLifecycleOwner(), item -> {
-            if (item < 0 || item >= mAttractionArrayLen) {
-                websiteFragmentContainerView.setLayoutParams(new LinearLayout.LayoutParams(0,
-                        LinearLayout.LayoutParams.MATCH_PARENT, 0));
-                return;
-            }
-            websiteFragmentContainerView.setLayoutParams(new LinearLayout.LayoutParams(0,
-                    LinearLayout.LayoutParams.MATCH_PARENT, 2));
-            mCurrIdx = item;
-            mWebView.loadUrl(AttractionActivity.attractionList.get(mCurrIdx).getUrl());
-            WebSettings webSettings = mWebView.getSettings();
-            webSettings.setJavaScriptEnabled(true);
-            mWebView.setWebViewClient(new WebViewClient());
-        });
-
         mWebView = (WebView) getActivity().findViewById(R.id.webView);
         mAttractionArrayLen = AttractionActivity.attractionList.size();
+        model.getSelectedItem().observe(getViewLifecycleOwner(), item -> {
+            if (item < 0 || item >= mAttractionArrayLen) {
+//                websiteFragmentContainerView.setLayoutParams(new LinearLayout.LayoutParams(0,
+//                        LinearLayout.LayoutParams.MATCH_PARENT, 0));
+                return;
+            }
+//            websiteFragmentContainerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+//                    LinearLayout.LayoutParams.MATCH_PARENT, 1));
+            mCurrIdx = item;
+            if(mWebView != null){
+                mWebView.loadUrl(AttractionActivity.attractionList.get(mCurrIdx).getUrl());
+                WebSettings webSettings = mWebView.getSettings();
+                webSettings.setJavaScriptEnabled(true);
+                mWebView.setWebViewClient(new WebViewClient());
+            }
+        });
     }
 }
