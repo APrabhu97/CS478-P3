@@ -20,23 +20,34 @@ public class MainActivity extends AppCompatActivity {
             "edu.uic.cs478.fall2021.project3";
 
     BroadcastReceiver mainReceiver = new MainReceiver() ;
-   // BroadcastReceiver touristReceiver = new TouristReceiver() ;
 
     IntentFilter mainFilter = new IntentFilter(TOURIST_INTENT) ;
-    //IntentFilter touristFilter = new IntentFilter(TOURIST_INTENT) ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (ContextCompat.checkSelfPermission(this, PERMISSION_NAME) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{PERMISSION_NAME}, 1);
+        }
+        else{
+            mainFilter.addAction(RESTAURANT_INTENT);
+            mainFilter.addAction(TOURIST_INTENT);
+            mainFilter.setPriority(100);
+            registerReceiver(mainReceiver, mainFilter, PERMISSION_NAME, null);
+        }
+    }
 
-        mainFilter.addAction(RESTAURANT_INTENT);
-        mainFilter.addAction(TOURIST_INTENT);
-
-        mainFilter.setPriority(100);
-        registerReceiver(mainReceiver, mainFilter, PERMISSION_NAME, null);
-
-     //   touristFilter.setPriority(100);
-      //  registerReceiver(touristReceiver, touristFilter, PERMISSION_NAME, null);
+    public void onRequestPermissionsResult(int code, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(code, permissions, grantResults);
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            mainFilter.addAction(RESTAURANT_INTENT);
+            mainFilter.addAction(TOURIST_INTENT);
+            mainFilter.setPriority(100);
+            registerReceiver(mainReceiver, mainFilter, PERMISSION_NAME, null);
+        } else {
+            Toast.makeText(this, "A2 will not work without you granting the permission", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void onDestroy() {
