@@ -17,6 +17,7 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/attractionWebsite"
         android:layout_width="0px"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        />
 
 </LinearLayout>

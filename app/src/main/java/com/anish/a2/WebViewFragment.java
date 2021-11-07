@@ -19,7 +19,6 @@ import androidx.lifecycle.ViewModelProvider;
 public class WebViewFragment extends Fragment {
     private WebView mWebView = null;
     private int mCurrIdx = -1;
-    private int mAttractionArrayLen;
     public ListViewModel model;
     private static final String TAG = "WebViewFragment";
 
@@ -33,19 +32,12 @@ public class WebViewFragment extends Fragment {
     public void onViewCreated (View view, Bundle savedInstanceState){
         Log.i(TAG, getClass().getSimpleName() + ":entered onViewCreated()");
         super.onViewCreated(view,savedInstanceState);
-        final FragmentContainerView  websiteFragmentContainerView = (FragmentContainerView)getActivity().findViewById(R.id.attractionWebsite);;
         model = new ViewModelProvider(requireActivity()).get(ListViewModel.class);
         mWebView = (WebView) getActivity().findViewById(R.id.webView);
-        mAttractionArrayLen = AttractionActivity.attractionList.size();
         model.getSelectedItem().observe(getViewLifecycleOwner(), item -> {
-            if (item < 0 || item >= mAttractionArrayLen) {
-//                websiteFragmentContainerView.setLayoutParams(new LinearLayout.LayoutParams(0,
-//                        LinearLayout.LayoutParams.MATCH_PARENT, 0));
-                return;
-            }
-//            websiteFragmentContainerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-//                    LinearLayout.LayoutParams.MATCH_PARENT, 1));
+            if (item < 0 || item >= AttractionActivity.attractionList.size())return;
             mCurrIdx = item;
+            //TODO: see if null check is required
             if(mWebView != null){
                 mWebView.loadUrl(AttractionActivity.attractionList.get(mCurrIdx).getUrl());
                 WebSettings webSettings = mWebView.getSettings();
