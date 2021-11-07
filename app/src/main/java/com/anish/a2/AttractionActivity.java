@@ -32,9 +32,8 @@ public class AttractionActivity extends FragmentActivity{
     private FragmentManager mFragmentManager;
     private static final int MATCH_PARENT = LinearLayout.LayoutParams.MATCH_PARENT;
     ListViewModel model;
-    int i = -1;
-    private final WebViewFragment mWebViewFragment = new WebViewFragment();
-    //TODO: ensure item is selected in name fragment after orientation change(blue highlight)
+    private WebViewFragment mWebViewFragment = new WebViewFragment();
+    private AttractionNameFragment mAttractionNameFragment = new AttractionNameFragment();
     //TODO: show action bar and handle that
     //TODO: check permissions according to TA and show A2 as per A1 input
     //TODO: handle horizontal weight 1/3 and 2/3
@@ -42,9 +41,6 @@ public class AttractionActivity extends FragmentActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState != null){
-            i = savedInstanceState.getInt("i");
-        }
         setContentView(R.layout.activity_restaurant);
         attractionList = setRestaurantList();
         Log.i("AttractionActivity", "created");
@@ -56,17 +52,17 @@ public class AttractionActivity extends FragmentActivity{
         mFragmentManager = getSupportFragmentManager();
         mFragmentManager.popBackStack();
         FragmentTransaction fragmentTransaction =mFragmentManager.beginTransaction();
+
         fragmentTransaction.replace(
                 R.id.attractionNames,
-                new AttractionNameFragment());
+                mAttractionNameFragment);
         fragmentTransaction.commit();
-
 
         model.getSelectedItem().observe(this, item -> {
             Log.i("AttractionActivity", item.toString());
             if(item >= 0 && item < attractionList.size()) {
-              //  if(i == item) return;
-                i = item;
+                mAttractionNameFragment.getListView().setItemChecked(item, true);
+                if(!model.isItemClicked)return;
                 onItemClicked(item);
             }
         });
@@ -97,7 +93,6 @@ public class AttractionActivity extends FragmentActivity{
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("i", i);
     }
 
     @Override
@@ -133,7 +128,7 @@ public class AttractionActivity extends FragmentActivity{
 
     @Override
     public void onBackPressed() {
-        i=-1;
+        model.isItemClicked = false;
         super.onBackPressed();
     }
 
